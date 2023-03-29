@@ -1,8 +1,9 @@
-import React, { useReducer,useState,useEffect} from 'react';
+import React, { useReducer,useState,useEffect,useContext} from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
+import AuthContext from '../../store/auth-context';
 
 
 const emailReducer = (state,action) =>{
@@ -65,6 +66,8 @@ const Login = (props) => {
       isValid: null,
     })
 
+    const authctx = useContext(AuthContext);
+
     const {isValid: emailIsValid} = emailState;
     const {isValid: passwordIsValid} = passwordState;
     const {isValid: collegeIsValid} = collegeState;
@@ -76,7 +79,9 @@ const Login = (props) => {
         emailIsValid && passwordIsValid && collegeIsValid
       );
     },500)
+     
     
+   
     return ()=>{
       console.log("clean up");
       clearTimeout(identifier);
@@ -120,26 +125,13 @@ const collegeChangeHandler = (event)=>{
 }
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(emailState.value, passwordState.value,collegeState.value);
+    authctx.onLogin(emailState.value, passwordState.value,collegeState.value);
   };
 
   return (
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
-        <div
-          className={`${classes.control} ${
-            emailState.isValid === false ? classes.invalid : ''
-          }`}
-        >
-          <label htmlFor="email">E-Mail</label>
-          <input
-            type="email"
-            id="email"
-            value={emailState.value}
-            onChange={emailChangeHandler}
-            onBlur={validateEmailHandler}
-          />
-        </div>
+        
         <div className={`${classes.control} ${
           collegeState.isValid === false ? classes.invalid : ''
         }`}>
